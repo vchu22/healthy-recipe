@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RecipeCalc</title>
+    <link rel="icon" href="img/favicon.png" type="image/x-icon" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="css/extra/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Angular -->
+    <script src="scripts/extra/angular.min.js"></script>
+    <script>
+      const f2f = '<%- food2fork %>';
+      const ntId = '<%- nutritionixId %>';
+      const ntKey = '<%- nutritionixKey %>';
+    </script>
+  </head>
+  <body ng-app="app">
+    <div class="jumbotron text-center">
+      <h1>🍊RecipesCalc🍎</h1>
+      <h4>A comprehensive nutrition calculator for your favorite dishes</h4>
+    </div>
+
+    <div id="content" class="text-center container">
+      <p id="introduction">Found some interesting dishes you want to cook but not sure if they fit your dietary needs?
+        Are you tired of having to manually type in all the ingredients you found in an online recipe into nutrition calculators.
+        This website will save the hassles for you!
+      </p>
+      <h2 id="q">How to use this site <button class="btn btn-primary"><i class="fas fa-caret-up"></i></button></h2>
+      <p id="a">Type in a food or ingredient in the search bar below and it will show a list of recipes relevant to your search term.
+        You can also click on "Get Ingredients" to get a list of ingredients and their nutritional content. Those information will
+        be shown in the table below.</p>
+
+      <h2>Find your recipes or type in your ingredients here</h2>
+      <ul class="nav nav-tabs nav-justified">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#panel1" role="tab">Recipe Search</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#panel2" role="tab">Manual Input</a>
+        </li>
+      </ul>
+      <div class="tab-content card">
+        <div class="tab-pane fade in show active" id="panel1" role="tabpanel">
+            <h4>From this dropdown menu, select a search engine for your favorite food.</h4>
+            <div class="ingredientsInput" ng-controller="searchController"  ng-cloak>
+              <select ng-options="opt.name for opt in apis track by opt.id" ng-model="selected" class="form-control"></select>
+                <div class="row" style="margin:5px auto;">
+                  <div class="col-xl-10 col-lg-10 col-md-9" style="padding: 0">
+                      <input type="text" class="form-control" ng-model="searchTerm" ng-keyup="$event.keyCode == 13 ? search() : null"/>
+                  </div>
+                  <button id="search" class="btn btn-default btn-primary col-lg-2 col-md-3" ng-click="search()">Search Recipe</button>
+              </div>
+              <div id="recipesList" class="well row" ng-show="showRecipesList">
+                <div class="dish well" ng-repeat="recipe in recipes" ng-hide="loading">
+                  <recipe item="recipe"></recipe>
+                </div>
+                <loading id="recipeLoading" color="LightGreen"></loading>
+              </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="panel2" role="tabpanel">
+            <h4>You can also manually type in the ingredients in the box below.</h4>
+            <div class="ingredientsInput" ng-controller="manualInputController">
+                <textarea class="form-control" id="ingredients" ng-model="manualInputStr"></textarea>
+                <button class="btn btn-default btn-primary" title="If you have a picture of a recipe page you want to scan, click here">Scan Recipe Book</button>
+                <button id="getNutrition" class="btn btn-default btn-info" ng-click="listIngredients()">Get Values</button>
+            </div>
+        </div>
+      </div>
+
+      <div style="margin:10px 0; max-height:500px; overflow:scroll;" ng-controller="tableController">
+        <loading id="tableLoading" color="sienna"></loading>
+        <table id="NutritionTable" ng-hide="loading || untouched">
+          <tr>
+            <th></th>
+            <th>Ingredient</th><th>Qty</th>
+            <th>Unit</th><th>Weight (gm)</th>
+            <th>Calories</th><th>Cholesterol</th>
+            <th>Protein</th><th>Fat</th>
+            <th>Potassium</th><th>Sodium</th>
+            <th>Sugar</th>
+          </tr>
+          <tr ng-repeat="n in ingrNutr" ng-style="{'background-color': ($index % 2 === 0 ? 'none':'#eac18f')}">
+            <td>
+              <button class="btn btn-danger" ng-click="remove(this)"><i class="fas fa-trash-alt"></i></button>
+            </td>
+            <td style="text-transform: capitalize;">{{n.food_name}}<br><img class="ingPhoto" ng-src="{{n.photo.thumb}}"/></td>
+            <td><input class="text-center tableInputs" type="number" min="0" ng-change="onchange($index,{{n}},'q')" ng-model="n.serving_qty"/></td>
+            <td>{{n.serving_unit}}</td>
+            <td><input class="text-center tableInputs" type="number" min="0" ng-change="onchange($index,{{n}},'g')" ng-model="n.serving_weight_grams"/></td>
+            <td>{{n.nf_calories | number: 2}}</td>
+            <td>{{n.nf_cholesterol | number: 2}}</td>
+            <td>{{n.nf_protein | number: 2}}</td>
+            <td>{{n.nf_total_fat | number: 2}}</td>
+            <td>{{n.nf_potassium | number: 2}}</td>
+            <td>{{n.nf_sodium | number: 2}}</td>
+            <td>{{n.nf_sugars | number: 2}}</td>
+          </tr>
+          <tr>
+            <th id="total" colspan="4">Total</th>
+            <td>{{totals.serving_weight_grams | number: 2}}</td>
+            <td>{{totals.nf_calories | number: 2}}</td>
+            <td>{{totals.nf_cholesterol | number: 2}}</td>
+            <td>{{totals.nf_protein | number: 2}}</td>
+            <td>{{totals.nf_total_fat | number: 2}}</td>
+            <td>{{totals.nf_potassium | number: 2}}</td>
+            <td>{{totals.nf_sodium | number: 2}}</td>
+            <td>{{totals.nf_sugars | number: 2}}</td>
+          </tr>
+        </table>
+      </div>
+    <!-- The Modal -->
+    <div id="pageModal" class="modal" ng-controller="modalController">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <p id="pageTitle"><i id="close" class="fas fa-window-close" ng-click="close()"></i>{{title}}</p>
+        <button class="btn btn-default" ng-click="newTab()">Open in new tab</button>
+        <iframe id="recipePage" ng-src="{{url}}" name="recipePage" sandbox></iframe>
+      </div>
+    </div>
+  </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="scripts/extra/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="scripts/extra/bootstrap.min.js"></script>
+
+    <!-- AngularJS custom -->
+    <script src="scripts/angular/app.js"></script>
+    <!-- Factories -->
+    <script src="scripts/angular/factories/componentBridge.js"></script>
+    <!-- Controllers -->
+    <script src="scripts/angular/controllers/searchController.js"></script>
+    <script src="scripts/angular/controllers/manualInputController.js"></script>
+    <script src="scripts/angular/controllers/modalController.js"></script>
+    <script src="scripts/angular/controllers/tableController.js"></script>
+    <!-- Directives -->
+    <script src="scripts/angular/directives/recipe.js"></script>
+    <script src="scripts/angular/directives/loading.js"></script>
+    <script>
+      $('#q > .btn').click(function(){
+        $('#a').toggle();
+        $('#q > .btn > i').toggleClass('fa-caret-up');
+        $('#q > .btn > i').toggleClass('fa-caret-down');
+      })
+    </script>
+    <div class="footer text-center">
+      Data Provided By <a href="http://food2fork.com/">Food2Fork.com</a>, <a href="http://www.recipepuppy.com/">Recipe Puppy</a> & <a href="https://www.nutritionix.com/">Nutritionix</a><br />
+    </div>
+  </body>
+</html>

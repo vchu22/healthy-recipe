@@ -1,0 +1,4 @@
+<p>{{item.title}}</p>
+<img ng-src="{{item.image_url || item.thumbnail}}" />
+<button class='btn btn-warning' ng-click="$parent.viewRecipe(item.title,item.source_url || item.href)">Get Cooking Guide</button>
+<button class='getNutrition btn btn-success' ng-click="$parent.listIngredients(item)">Get Ingredients</button>

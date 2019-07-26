@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css?family=Knewave|Crete+Round|Bree+Serif|Palanquin+Dark');
+@import url('loading.css');
+@import url('modal.css');
+:root{
+  --main-bg: #ebe0bd;
+  --main-txt:#333;
+  --table-header:#8a7e65;
+  --table-input:#e0cda2;
+  --header-font:'Palanquin Dark', sans-serif;
+  --pg-font:'Bree Serif', serif;
+}
+/* hide scrollbars*/
+::-webkit-scrollbar {
+  display: none;
+}
+body{
+  background-color: var(--main-bg);
+  font-family: 'Crete Round', serif;
+  color: var(--main-txt);
+}
+/* banner */
+.jumbotron{
+  background-image: url('../img/banner.jpg');
+  background-position: 50% 22%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 300px;
+  color: white;
+  font-family: 'Knewave', cursive;
+}
+.jumbotron > h1{
+  margin: 40px auto;
+}
+.jumbotron > h4{
+  margin: 20px auto;
+}
+
+/* middle part */
+#content{
+  min-height: 75vh;
+}
+#introduction, #a{
+  font-family: var(--pg-font);
+  font-size: 18px;
+}
+h2{
+  font-family: var(--header-font);
+  margin: 10px 0 20px;
+}
+.card{
+  max-height: 600px;
+}
+#searchBox{
+  padding: 5px 10px;
+}
+/* recipes from API */
+#recipesList{
+  max-height: 420px;
+  margin: 10px auto;
+  background-color: darkslategray;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+@media screen and (max-width: 480px) {
+  #recipesList{
+    max-height: 360px;
+  }
+}
+#recipesList > h4{
+  line-height: 2em;
+}
+.dish{
+  width: 210px;
+  height: 300px;
+  background-color: white;
+  display: inline-block;
+  margin: 10px auto;
+}
+.dish *{
+  margin: 5px auto;
+}
+.dish p {
+  height: 15%;
+  padding: 5%;
+}
+.dish img{
+  width: 160px;
+  height: 120px;
+}
+
+/* nutrition calculator */
+#ingredients{
+  width: 80%;
+  min-height: 200px;
+  max-height: 450px;
+  margin: 10px 10%;
+}
+#NutritionTable{
+  margin: auto;
+}
+th, td{
+  border: 2px solid #ebe0bd;
+  padding: 5px 10px;
+  font-family: var(--pg-font);
+}
+th{
+  background: var(--table-header);
+  color:#fff;
+  position: sticky;
+  top: 0;
+}
+.tableInputs{
+  background-color: var(--table-input);
+  border: 0px;
+  max-width: 120px;
+}
+.btn{
+  padding: 6px 8px;
+}
+.ingPhoto {
+  max-width: 80px;
+  max-height: 120px;
+}
+
+.footer{
+  background: #333;
+  color: #fff;
+  width: 100%;
+  height: auto;
+  margin-top: -10px;
+  padding: 10px 0;
+  bottom: -20px;
+  position: relative;
+  display: block;
+  clear: both;
+}
