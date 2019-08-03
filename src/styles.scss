@@ -1,1 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Knewave|Crete+Round|Bree+Serif|Palanquin+Dark');
+$main-bg: #ebe0bd;
+$main-txt: #333;
+$table-header: #8a7e65;
+$table-input: #e0cda2;
+$header-font: 'Palanquin Dark', sans-serif;
+$pg-font: 'Bree Serif', serif;
+
+body {
+  background-color: $main-bg;
+  font-family: 'Crete Round', serif;
+  color: var(--main-txt);
+  margin: 0;
+
+  header {
+    // background-image: url('/img/banner.jpg');
+    background-position: 50% 22%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 300px;
+    color: white;
+    font-family: 'Knewave', cursive;
+    h1 {
+      margin: 40px auto;
+    }
+    h4 {
+      margin: 20px auto;
+    }
+  }
+
+  footer {
+    background: #333;
+    color: #fff;
+    width: 100%;
+    height: auto;
+    margin-top: -10px;
+    padding: 10px 0;
+    bottom: -20px;
+    position: relative;
+    display: block;
+    clear: both;
+  }
+}
