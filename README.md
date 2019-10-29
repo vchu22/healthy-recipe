@@ -1,4 +1,4 @@
-# Healty Recipes
+# RecipesCalc
 
 A website that helps you search and calculate the nutritional value of your favorite recipe.
 
